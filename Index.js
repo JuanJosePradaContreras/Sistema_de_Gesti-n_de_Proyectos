@@ -6,6 +6,11 @@ const showMainMenu = require('./commands/mainMenu'); // Importamos el menú prin
 const chalkTheme = require('./config/chalkTheme');   // Tema de colores para estilizar textos
 const showClientesMenu = require('./commands/submenus/clientesMenu'); // SubMenu clientes
 const showPropuestasMenu = require('./commands/submenus/propuestasMenu');
+const showProyectosMenu = require('./commands/submenus/proyectosMenu');
+const showContratosMenu = require('./commands/submenus/contratosMenu');
+const showEntregablesMenu = require('./commands/submenus/entregablesMenu');
+const showFinanzasMenu = require('./commands/submenus/finanzasMenu');
+
 
 // Función principal que inicia la aplicación
 async function runApp() {
@@ -28,19 +33,23 @@ async function runApp() {
         break;
 
       case chalkTheme.option('3. Gestión de Proyectos'):
-        console.log(chalkTheme.info('\n[PROYECTOS] → Módulo en construcción...\n'));
+        const proyectoOption = await showProyectosMenu();
+        console.log(chalkTheme.info(`\n[PROYECTOS] → Seleccionaste: ${proyectoOption}\n`));
         break;
 
       case chalkTheme.option('4. Contratos'):
-        console.log(chalkTheme.info('\n[CONTRATOS] → Módulo en construcción...\n'));
+        const contratoOption = await showContratosMenu();
+        console.log(chalkTheme.info(`\n[CONTRATOS] → Seleccionaste: ${contratoOption}\n`));
         break;
 
       case chalkTheme.option('5. Entregables'):
-        console.log(chalkTheme.info('\n[ENTREGABLES] → Módulo en construcción...\n'));
+        const entregableOption = await showEntregablesMenu();
+        console.log(chalkTheme.info(`\n[ENTREGABLES] → Seleccionaste: ${entregableOption}\n`));
         break;
 
       case chalkTheme.option('6. Finanzas'):
-        console.log(chalkTheme.info('\n[FINANZAS] → Módulo en construcción...\n'));
+        const finanzasOption = await showFinanzasMenu();
+        console.log(chalkTheme.info(`\n[FINANZAS] → Seleccionaste: ${finanzasOption}\n`));
         break;
 
       case chalkTheme.exit('0. Salir'):
