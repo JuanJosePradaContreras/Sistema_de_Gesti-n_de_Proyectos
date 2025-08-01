@@ -1,17 +1,17 @@
-// ===============================================
-// Archivo de configuración de estilos para la CLI
-// Utiliza la librería 'chalk@4' para colorear textos
-// ===============================================
+// ===============================
+// Tema de colores con Chalk para estilizar textos
+// ===============================
 
-// Importamos chalk usando CommonJS (válido con chalk@4)
 const chalk = require('chalk');
 
-// Exportamos un objeto con diferentes estilos personalizados
-module.exports = {
-  
-  title: chalk.hex("#00BFFF").bold, // Estilo para títulos o encabezados: azul celeste + negrita
-  option: chalk.green, // Estilo para opciones interactivas: verde
-  exit: chalk.redBright,  // Estilo para la opción de salida: rojo brillante
-  info: chalk.whiteBright, // Estilo para mensajes informativos o neutrales: blanco brillante
-  banner: chalk.bgMagenta.white.bold // Estilo para banners decorativos: fondo magenta, texto blanco y en negrita
+// Creamos un objeto con diferentes estilos de texto
+const chalkTheme = {
+  banner: chalk.hex("#FFD700").bold,          // Amarillo oro para títulos principales
+  title: chalk.hex("#00BFFF").bold,           // Azul cielo brillante para títulos
+  option: chalk.hex("#7FFF00"),               // Verde claro para opciones del menú
+  exit: chalk.hex("#FF4500").bold,            // Rojo anaranjado para "salir"
+  info: chalk.hex("#B0C4DE"),                 // Azul grisáceo para mensajes informativos
+  section: chalk.hex("#DA70D6").bold.underline // 💡 Agrega esta línea para el submenú
 };
+
+module.exports = chalkTheme;

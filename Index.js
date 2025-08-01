@@ -4,6 +4,8 @@
 
 const showMainMenu = require('./commands/mainMenu'); // Importamos el menú principal
 const chalkTheme = require('./config/chalkTheme');   // Tema de colores para estilizar textos
+const showClientesMenu = require('./commands/submenus/clientesMenu'); // SubMenu clientes
+const showPropuestasMenu = require('./commands/submenus/propuestasMenu');
 
 // Función principal que inicia la aplicación
 async function runApp() {
@@ -16,11 +18,13 @@ async function runApp() {
     // Evaluamos la opción seleccionada por el usuario
     switch (selected) {
       case chalkTheme.option('1. Gestión de Clientes'):
-        console.log(chalkTheme.info('\n[CLIENTES] → Módulo en construcción...\n'));
+        const clienteOption = await showClientesMenu();
+        console.log(chalkTheme.info(`\n[CLIENTES] → Seleccionaste: ${clienteOption}\n`));
         break;
-
+      
       case chalkTheme.option('2. Gestión de Propuestas'):
-        console.log(chalkTheme.info('\n[PROPUESTAS] → Módulo en construcción...\n'));
+        const propuestaOption = await showPropuestasMenu();
+        console.log(chalkTheme.info(`\n[PROPUESTAS] → Seleccionaste: ${propuestaOption}\n`));
         break;
 
       case chalkTheme.option('3. Gestión de Proyectos'):
