@@ -1,32 +1,67 @@
-// ============================
-// Submenú para Gestión de Clientes
-// Opciones: Crear, Editar, Eliminar, Listar
-// ============================
+// ==========================================
+// Submenú de gestión de clientes
+// Conecta con la lógica del módulo clientesModule.js
+// ==========================================
 
 const inquirer = require('inquirer');
 const chalkTheme = require('../../config/chalkTheme');
+const {
+  crearCliente,
+  listarClientes,
+  buscarClientePorId,
+  actualizarCliente,
+  eliminarCliente
+} = require('../../models/clienteModel');
 
 async function showClientesMenu() {
   console.clear();
   console.log(chalkTheme.section('\n[Gestión de Clientes]\n'));
 
-  const answer = await inquirer.prompt([
+  const { opcion } = await inquirer.prompt([
     {
       type: 'list',
-      name: 'clienteOption',
-      message: chalkTheme.title('¿Qué acción deseas realizar?'),
-      loop: false,
+      name: 'opcion',
+      message: chalkTheme.title('¿Qué deseas hacer?'),
       choices: [
-        chalkTheme.option('1. Registrar nuevo cliente'),      // CT1
-        chalkTheme.option('2. Editar cliente existente'),     // CT2
-        chalkTheme.option('3. Eliminar cliente'),             // CT3
-        chalkTheme.option('4. Ver todos los clientes'),       // (Visualización adicional)
+        chalkTheme.option('1. Crear cliente'),
+        chalkTheme.option('2. Listar clientes'),
+        chalkTheme.option('3. Buscar cliente por ID'),
+        chalkTheme.option('4. Actualizar cliente'),
+        chalkTheme.option('5. Eliminar cliente'),
         chalkTheme.exit('0. Volver al menú principal')
       ]
     }
   ]);
 
-  return answer.clienteOption;
+  switch (opcion) {
+    case chalkTheme.option('1. Crear cliente'):
+      await crearCliente();
+      break;
+    case chalkTheme.option('2. Listar clientes'):
+      await listarClientes();
+      break;
+    case chalkTheme.option('3. Buscar cliente por ID'):
+      await buscarClientePorId();
+      break;
+    case chalkTheme.option('4. Actualizar cliente'):
+      await actualizarCliente();
+      break;
+    case chalkTheme.option('5. Eliminar cliente'):
+      await eliminarCliente();
+      break;
+    case chalkTheme.exit('0. Volver al menú principal'):
+      return;
+  }
+
+  await inquirer.prompt([
+    {
+      type: 'input',
+      name: 'pause',
+      message: chalkTheme.info('\nPresiona ENTER para continuar...')
+    }
+  ]);
+
+  return await showClientesMenu();
 }
 
 module.exports = showClientesMenu;

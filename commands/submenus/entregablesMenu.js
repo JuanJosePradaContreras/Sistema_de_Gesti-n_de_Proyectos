@@ -1,41 +1,47 @@
-// ===========================
-// Submenú: Gestión de Entregables
-// Muestra opciones para administrar entregables dentro del sistema de portafolio freelance
-// ===========================
-
-// Importamos inquirer para preguntas interactivas en CLI
 const inquirer = require('inquirer');
-// Importamos el tema de colores personalizado
 const chalkTheme = require('../../config/chalkTheme');
+const {
+  crearEntregable,
+  listarEntregables,
+  actualizarEntregable,
+  eliminarEntregable
+} = require('../../models/entregableModel');
 
-// Función que muestra el submenú de Entregables
 async function showEntregablesMenu() {
-  console.clear(); // Limpia la consola antes de mostrar el menú
+  let salir = false;
 
-  // Título del submenú estilizado
-  console.log(chalkTheme.section('\n[Gestión de Entregables]\n'));
-
-  // Menú de opciones
-  const answer = await inquirer.prompt([
-    {
+  while (!salir) {
+    const { opcion } = await inquirer.prompt([{
       type: 'list',
-      name: 'entregableOption',
-      message: chalkTheme.title('Selecciona una acción:'),
-      loop: false, // Desactiva el loop de navegación circular en el menú
+      name: 'opcion',
+      message: chalkTheme.section('\nGestión de Entregables'),
       choices: [
-        chalkTheme.option('1. Agregar nuevo entregable'),
-        chalkTheme.option('2. Ver lista de entregables'),
-        chalkTheme.option('3. Marcar entregable como finalizado'),
-        chalkTheme.option('4. Eliminar entregable'),
-        new inquirer.Separator(),
-        chalkTheme.exit('0. Volver al menú principal')
+        'Crear entregable',
+        'Listar entregables',
+        'Actualizar entregable',
+        'Eliminar entregable',
+        'Volver al menú principal'
       ]
-    }
-  ]);
+    }]);
 
-  // Retorna la opción seleccionada
-  return answer.entregableOption;
+    switch (opcion) {
+      case 'Crear entregable':
+        await crearEntregable();
+        break;
+      case 'Listar entregables':
+        await listarEntregables();
+        break;
+      case 'Actualizar entregable':
+        await actualizarEntregable();
+        break;
+      case 'Eliminar entregable':
+        await eliminarEntregable();
+        break;
+      case 'Volver al menú principal':
+        salir = true;
+        break;
+    }
+  }
 }
 
-// Exportamos la función para integrarla al flujo principal
 module.exports = showEntregablesMenu;

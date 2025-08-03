@@ -1,41 +1,42 @@
-// ===========================
-// Submenú: Gestión de Contratos
-// Este módulo muestra opciones relacionadas con la gestión de contratos freelance
-// ===========================
-
-// Importamos inquirer para crear menús interactivos
 const inquirer = require('inquirer');
-// Importamos tema personalizado para aplicar estilos
 const chalkTheme = require('../../config/chalkTheme');
+const {
+  crearContrato,
+  listarContratos,
+  buscarContratoPorId,
+  actualizarContrato,
+  eliminarContrato
+} = require('../../models/contratoModel');
 
-// Función asincrónica que muestra el submenú de Contratos
 async function showContratosMenu() {
-  console.clear(); // Limpia consola antes de mostrar menú
+  let salir = false;
 
-  // Título estilizado del submenú
-  console.log(chalkTheme.section('\n[Gestión de Contratos]\n'));
+  while (!salir) {
+    const { opcion } = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'opcion',
+        message: chalkTheme.section('\nGestión de Contratos'),
+        choices: [
+          { name: 'Crear contrato', value: 'crear' },
+          { name: 'Listar contratos', value: 'listar' },
+          { name: 'Buscar contrato por ID', value: 'buscar' },
+          { name: 'Actualizar contrato', value: 'actualizar' },
+          { name: 'Eliminar contrato', value: 'eliminar' },
+          { name: 'Volver al menú principal', value: 'salir' }
+        ]
+      }
+    ]);
 
-  // Desplegamos las opciones del submenú
-  const answer = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'contratoOption',
-      message: chalkTheme.title('¿Qué deseas hacer?'),
-      loop: false, // Impide el bucle visual de las opciones
-      choices: [
-        chalkTheme.option('1. Crear nuevo contrato'),
-        chalkTheme.option('2. Ver contratos existentes'),
-        chalkTheme.option('3. Editar un contrato'),
-        chalkTheme.option('4. Cancelar contrato'),
-        new inquirer.Separator(),
-        chalkTheme.exit('0. Volver al menú principal')
-      ]
+    switch (opcion) {
+      case 'crear': await crearContrato(); break;
+      case 'listar': await listarContratos(); break;
+      case 'buscar': await buscarContratoPorId(); break;
+      case 'actualizar': await actualizarContrato(); break;
+      case 'eliminar': await eliminarContrato(); break;
+      case 'salir': salir = true; break;
     }
-  ]);
-
-  // Devolvemos la opción seleccionada
-  return answer.contratoOption;
+  }
 }
 
-// Exportamos la función para su uso en index.js
 module.exports = showContratosMenu;
