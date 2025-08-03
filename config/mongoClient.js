@@ -1,22 +1,20 @@
+// ===========================
+// Conexión global a MongoDB
+// ===========================
+
+// config/mongoClient.js
 const { MongoClient } = require('mongodb');
 
-const uri = 'mongodb://localhost:27017';
-const client = new MongoClient(uri);
-
-let db;
+const uri = 'mongodb://127.0.0.1:27017'; // o tu URI de conexión
+const dbName = 'gestor_freelance'; // o el nombre que estés usando
+let client;
 
 async function getDB() {
-  if (!db) {
-    try {
-      await client.connect();
-      console.log('✅ Conectado a MongoDB');
-      db = client.db('gestor_portafolio');
-    } catch (err) {
-      console.error('❌ Error al conectar a MongoDB:', err);
-      process.exit(1);
-    }
+  if (!client) {
+    client = new MongoClient(uri);
+    await client.connect();
   }
-  return db;
+  return client.db(dbName);
 }
 
 module.exports = getDB;

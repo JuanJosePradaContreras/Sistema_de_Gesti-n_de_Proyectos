@@ -8,7 +8,7 @@ const chalkTheme = require('../../config/chalkTheme');
 const {
   crearCliente,
   listarClientes,
-  buscarClientePorId,
+  buscarCliente,  // 👈 nombre debe coincidir con el export
   actualizarCliente,
   eliminarCliente
 } = require('../../models/clienteModel');
@@ -25,7 +25,7 @@ async function showClientesMenu() {
       choices: [
         chalkTheme.option('1. Crear cliente'),
         chalkTheme.option('2. Listar clientes'),
-        chalkTheme.option('3. Buscar cliente por ID'),
+        chalkTheme.option('3. Buscar cliente'),
         chalkTheme.option('4. Actualizar cliente'),
         chalkTheme.option('5. Eliminar cliente'),
         chalkTheme.exit('0. Volver al menú principal')
@@ -40,8 +40,8 @@ async function showClientesMenu() {
     case chalkTheme.option('2. Listar clientes'):
       await listarClientes();
       break;
-    case chalkTheme.option('3. Buscar cliente por ID'):
-      await buscarClientePorId();
+    case chalkTheme.option('3. Buscar cliente'):
+      await buscarCliente();
       break;
     case chalkTheme.option('4. Actualizar cliente'):
       await actualizarCliente();

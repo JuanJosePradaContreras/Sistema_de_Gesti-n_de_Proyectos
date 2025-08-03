@@ -1,9 +1,10 @@
+
 const inquirer = require('inquirer');
 const chalkTheme = require('../../config/chalkTheme');
 const {
   crearContrato,
   listarContratos,
-  buscarContratoPorId,
+  buscarContrato,
   actualizarContrato,
   eliminarContrato
 } = require('../../models/contratoModel');
@@ -16,25 +17,37 @@ async function showContratosMenu() {
       {
         type: 'list',
         name: 'opcion',
-        message: chalkTheme.section('\nGestión de Contratos'),
+        message: chalkTheme.section('Gestión de Contratos'),
         choices: [
-          { name: 'Crear contrato', value: 'crear' },
-          { name: 'Listar contratos', value: 'listar' },
-          { name: 'Buscar contrato por ID', value: 'buscar' },
-          { name: 'Actualizar contrato', value: 'actualizar' },
-          { name: 'Eliminar contrato', value: 'eliminar' },
-          { name: 'Volver al menú principal', value: 'salir' }
+          'Crear contrato',
+          'Listar contratos',
+          'Buscar contrato',
+          'Actualizar contrato',
+          'Eliminar contrato',
+          'Volver al menú principal'
         ]
       }
     ]);
 
     switch (opcion) {
-      case 'crear': await crearContrato(); break;
-      case 'listar': await listarContratos(); break;
-      case 'buscar': await buscarContratoPorId(); break;
-      case 'actualizar': await actualizarContrato(); break;
-      case 'eliminar': await eliminarContrato(); break;
-      case 'salir': salir = true; break;
+      case 'Crear contrato':
+        await crearContrato();
+        break;
+      case 'Listar contratos':
+        await listarContratos();
+        break;
+      case 'Buscar contrato':
+        await buscarContrato();
+        break;
+      case 'Actualizar contrato':
+        await actualizarContrato();
+        break;
+      case 'Eliminar contrato':
+        await eliminarContrato();
+        break;
+      case 'Volver al menú principal':
+        salir = true;
+        break;
     }
   }
 }
