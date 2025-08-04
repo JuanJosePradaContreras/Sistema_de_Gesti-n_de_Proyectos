@@ -23,33 +23,27 @@ async function runApp() {
     // Evaluamos la opción seleccionada por el usuario
     switch (selected) {
       case chalkTheme.option('1. Gestión de Clientes'):
-        const clienteOption = await showClientesMenu();
-        console.log(chalkTheme.info(`\n[CLIENTES] → Seleccionaste: ${clienteOption}\n`));
+        await showClientesMenu();
         break;
-      
+
       case chalkTheme.option('2. Gestión de Propuestas'):
-        const propuestaOption = await showPropuestasMenu();
-        console.log(chalkTheme.info(`\n[PROPUESTAS] → Seleccionaste: ${propuestaOption}\n`));
+        await showPropuestasMenu();
         break;
 
       case chalkTheme.option('3. Gestión de Proyectos'):
-        const proyectoOption = await showProyectosMenu();
-        console.log(chalkTheme.info(`\n[PROYECTOS] → Seleccionaste: ${proyectoOption}\n`));
+        await showProyectosMenu();
         break;
 
       case chalkTheme.option('4. Contratos'):
-        const contratoOption = await showContratosMenu();
-        console.log(chalkTheme.info(`\n[CONTRATOS] → Seleccionaste: ${contratoOption}\n`));
+        await showContratosMenu();
         break;
 
       case chalkTheme.option('5. Entregables'):
-        const entregableOption = await showEntregablesMenu();
-        console.log(chalkTheme.info(`\n[ENTREGABLES] → Seleccionaste: ${entregableOption}\n`));
+        await showEntregablesMenu();
         break;
 
       case chalkTheme.option('6. Finanzas'):
-        const finanzasOption = await showFinanzasMenu();
-        console.log(chalkTheme.info(`\n[FINANZAS] → Seleccionaste: ${finanzasOption}\n`));
+        await showFinanzasMenu();
         break;
 
       case chalkTheme.exit('0. Salir'):
