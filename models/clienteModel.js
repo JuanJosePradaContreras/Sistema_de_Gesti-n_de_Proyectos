@@ -1,5 +1,6 @@
 // ===============================
-// Logica de Clientes
+// clienteModel.js
+// Lógica para gestión de clientes
 // ===============================
 
 const { ObjectId } = require('mongodb');
@@ -7,24 +8,37 @@ const inquirer = require('inquirer');
 const chalkTheme = require('../config/chalkTheme');
 const getDB = require('../config/mongoClient');
 
+// ===============================
+// VALIDACIONES
+// ===============================
 
-// Validación simple de email
 function validarEmail(email) {
   return /^\S+@\S+\.\S+$/.test(email) || 'Correo no válido';
 }
 
-// Validación de número
 function validarTelefono(telefono) {
   return /^\d{7,15}$/.test(telefono) || 'Teléfono inválido (solo números, 7 a 15 dígitos)';
 }
 
-// Crear nuevo cliente
+// ===============================
+// CREAR CLIENTE
+// ===============================
+
 async function crearCliente() {
   const db = await getDB();
   const clientes = db.collection('clientes');
 
   const datos = await inquirer.prompt([
-    { type: 'input', name: 'nombre', message: 'Nombre del cliente:', validate: input => !!input || 'Requerido' },
+    {
+      type: 'input',
+      name: 'nombre',
+      message: 'Nombre del cliente:',
+      validate: async (input) => {
+        if (!input) return 'El nombre es obligatorio';
+        const existe = await clientes.findOne({ nombre: input });
+        return existe ? 'Ese nombre ya está registrado' : true;
+      }
+    },
     { type: 'input', name: 'correo', message: 'Correo electrónico:', validate: validarEmail },
     { type: 'input', name: 'telefono', message: 'Teléfono de contacto:', validate: validarTelefono }
   ]);
@@ -33,7 +47,10 @@ async function crearCliente() {
   console.log(chalkTheme.success('\n✅ Cliente creado con ID: ' + resultado.insertedId));
 }
 
-// Listar todos los clientes
+// ===============================
+// LISTAR CLIENTES
+// ===============================
+
 async function listarClientes() {
   const db = await getDB();
   const clientes = await db.collection('clientes').find().toArray();
@@ -52,7 +69,10 @@ async function listarClientes() {
   })));
 }
 
-// Buscar cliente por nombre, correo o teléfono
+// ===============================
+// BUSCAR CLIENTE
+// ===============================
+
 async function buscarCliente() {
   const db = await getDB();
   const clientes = db.collection('clientes');
@@ -96,12 +116,14 @@ async function buscarCliente() {
   }
 }
 
-// Actualizar cliente parcialmente
+// ===============================
+// ACTUALIZAR CLIENTE
+// ===============================
+
 async function actualizarCliente() {
   const db = await getDB();
   const clientes = db.collection('clientes');
 
-  // Buscar cliente
   const { criterio, valor } = await inquirer.prompt([
     {
       type: 'list',
@@ -152,7 +174,6 @@ async function actualizarCliente() {
     clienteSeleccionado = await clientes.findOne({ _id: new ObjectId(clienteId) });
   }
 
-  // Elegir campo a actualizar
   const campos = Object.keys(clienteSeleccionado).filter(k => !['_id'].includes(k));
   const { campo, nuevoValor } = await inquirer.prompt([
     {
@@ -168,15 +189,27 @@ async function actualizarCliente() {
     }
   ]);
 
+  // Validación si cambia el nombre y ya existe
+  if (campo === 'nombre') {
+    const existe = await clientes.findOne({ nombre: nuevoValor });
+    if (existe) {
+      console.log(chalkTheme.error('\nEse nombre ya está registrado.'));
+      return;
+    }
+  }
+
   const result = await clientes.updateOne(
     { _id: clienteSeleccionado._id },
     { $set: { [campo]: nuevoValor } }
   );
 
-  console.log(chalkTheme.success(`\nCliente actualizado correctamente. Campos modificados: ${result.modifiedCount}`));
+  console.log(chalkTheme.success(`\n✅ Cliente actualizado. Campos modificados: ${result.modifiedCount}`));
 }
 
-// Eliminar cliente
+// ===============================
+// ELIMINAR CLIENTE
+// ===============================
+
 async function eliminarCliente() {
   const { id } = await inquirer.prompt({
     type: 'input',
@@ -186,11 +219,28 @@ async function eliminarCliente() {
 
   try {
     const db = await getDB();
+    const clientes = db.collection('clientes');
+
+    const cliente = await clientes.findOne({ _id: new ObjectId(id) });
+    if (!cliente) {
+      console.log(chalkTheme.warning('\nCliente no encontrado.'));
+      return;
+    }
+
+    // Revisión de relaciones por nombre en otras colecciones (si deseas activarlo)
+    const relacionadas = ['propuestas', 'contratos', 'entregables', 'finanzas'];
+    for (const coleccion of relacionadas) {
+      const relacionados = await db.collection(coleccion).findOne({ clienteNombre: cliente.nombre });
+      if (relacionados) {
+        console.log(chalkTheme.error(`\n❌ No puedes eliminar al cliente porque tiene registros en "${coleccion}".`));
+        return;
+      }
+    }
 
     const { confirmacion } = await inquirer.prompt({
       type: 'confirm',
       name: 'confirmacion',
-      message: '¿Estás seguro de que quieres eliminar este cliente?',
+      message: `¿Confirmas eliminar al cliente "${cliente.nombre}"?`,
       default: false
     });
 
@@ -199,7 +249,7 @@ async function eliminarCliente() {
       return;
     }
 
-    const resultado = await db.collection('clientes').deleteOne({ _id: new ObjectId(id) });
+    const resultado = await clientes.deleteOne({ _id: new ObjectId(id) });
 
     if (resultado.deletedCount === 0) {
       console.log(chalkTheme.warning('\n❌ Cliente no encontrado.'));
@@ -210,6 +260,10 @@ async function eliminarCliente() {
     console.log(chalkTheme.error('\nID inválido o error al eliminar.'));
   }
 }
+
+// ===============================
+// EXPORTACIONES
+// ===============================
 
 module.exports = {
   crearCliente,
