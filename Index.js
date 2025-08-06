@@ -10,6 +10,7 @@ const showProyectosMenu = require('./commands/submenus/proyectosMenu');
 const showContratosMenu = require('./commands/submenus/contratosMenu');
 const showEntregablesMenu = require('./commands/submenus/entregablesMenu');
 const showFinanzasMenu = require('./commands/submenus/finanzasMenu');
+const showClonarProyecto = require('./commands/submenus/clonarMenu');
 
 
 // Función principal que inicia la aplicación
@@ -44,6 +45,10 @@ async function runApp() {
 
       case chalkTheme.option('6. Finanzas'):
         await showFinanzasMenu();
+        break;
+
+      case chalkTheme.option('7. Clonar Proyecto'):
+        await showClonarProyecto();
         break;
 
       case chalkTheme.exit('0. Salir'):
